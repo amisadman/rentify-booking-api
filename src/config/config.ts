@@ -4,5 +4,6 @@ dotenv.config();
 export const config = {
 
     connection_string: process.env.CONNECTION_STRING,
-    port: process.env.PORT
+    port: process.env.PORT,
+    salt:process.env.SALT
 }
