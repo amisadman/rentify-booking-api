@@ -41,7 +41,7 @@ const signin = async (payload: Record<string, unknown>) => {
   const jwt_secret = `${config.jwt_secret}`;
 
   const token = jwt.sign(
-    { name: user.name, email: user.email, role: user.role },
+    {id:user.id ,name: user.name, email: user.email, role: user.role },
     jwt_secret,
     {
       expiresIn: "7d",

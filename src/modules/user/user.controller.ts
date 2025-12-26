@@ -15,6 +15,39 @@ const getAllUsers = async(req:Request,res:Response)=>{
 
 }
 
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const currentUser = req.user!;
+
+    const existingUser = await userService.getUserById(Number(req.params.id));
+    if (!existingUser) {
+      return sendResponse(res, 404, false, "User not found");
+    }
+
+    if (currentUser.role !== "admin" && currentUser.id !== Number(req.params.id)) {
+      return sendResponse(res, 403, false, "You can only update your own profile");
+    }
+
+    
+    if (req.body.role && currentUser.role !== "admin") {
+      return sendResponse(res, 403, false, "Only admin can update user roles");
+    }
+
+    const result = await userService.updateUser(Number(req.params.id), req.body);
+    if (!result) {
+      return sendResponse(res, 400, false, "No valid fields to update");
+    }
+
+    return sendResponse(res, 200, true, "User updated successfully", result);
+  } catch (error: any) {
+    if (error.message.includes("duplicate key")) {
+      return sendResponse(res, 400, false, "Email already exists");
+    }
+    return sendResponse(res, 500, false, error.message);
+  }
+};
+
 export const userController ={
-    getAllUsers
+    getAllUsers,
+    updateUser
 }
