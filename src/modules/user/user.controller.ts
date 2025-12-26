@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { sendResponse } from "../../utils/response";
 import { userService } from "./user.service";
 
-const getAllUsers = async(req:Request,res:Response)=>{
-   try {
+const getAllUsers = async (req: Request, res: Response) => {
+  try {
     const result = await userService.getAllUsers();
     if (result.length === 0) {
       return sendResponse(res, 200, true, "No users found", []);
@@ -12,8 +12,7 @@ const getAllUsers = async(req:Request,res:Response)=>{
   } catch (error: any) {
     return sendResponse(res, 500, false, error.message);
   }
-
-}
+};
 
 const updateUser = async (req: Request, res: Response) => {
   try {
@@ -24,16 +23,26 @@ const updateUser = async (req: Request, res: Response) => {
       return sendResponse(res, 404, false, "User not found");
     }
 
-    if (currentUser.role !== "admin" && currentUser.id !== Number(req.params.id)) {
-      return sendResponse(res, 403, false, "You can only update your own profile");
+    if (
+      currentUser.role !== "admin" &&
+      currentUser.id !== Number(req.params.id)
+    ) {
+      return sendResponse(
+        res,
+        403,
+        false,
+        "You can only update your own profile"
+      );
     }
 
-    
     if (req.body.role && currentUser.role !== "admin") {
       return sendResponse(res, 403, false, "Only admin can update user roles");
     }
 
-    const result = await userService.updateUser(Number(req.params.id), req.body);
+    const result = await userService.updateUser(
+      Number(req.params.id),
+      req.body
+    );
     if (!result) {
       return sendResponse(res, 400, false, "No valid fields to update");
     }
@@ -66,8 +75,8 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-export const userController ={
-    getAllUsers,
-    updateUser,
-    deleteUser
-}
+export const userController = {
+  getAllUsers,
+  updateUser,
+  deleteUser,
+};

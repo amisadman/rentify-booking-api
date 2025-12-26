@@ -64,5 +64,5 @@ export const userService = {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
 };
