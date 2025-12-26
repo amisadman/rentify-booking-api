@@ -1,12 +1,17 @@
-import { NextFunction, Request, Response } from "express"
-import { sendResponse } from "../utils/response"
+import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../utils/response";
 
-export const access = (role: "admin"|"customer") =>{
-    return (req:Request,res:Response,next:NextFunction) =>{
+type Role = "admin" | "customer";
 
-        if(req.user?.role !== role) return sendResponse(res, 403, false, "Unauthorized",null);
+export const access = (role: Role[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return sendResponse(res, 401, false, "Unauthorized", null);
+    }
+    if (!role.includes(req.user.role)) {
+      return sendResponse(res, 403, false, "Forbidden", null);
+    }
 
-        next();
-    };
-
+    next();
+  };
 };

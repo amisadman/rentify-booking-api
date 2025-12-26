@@ -5,6 +5,8 @@ import { access } from "../../middleware/role";
 
 const router = Router();
 
-router.post("/", auth,access("customer"),vehiclesController.getVehicles);
+router.post("/", auth, access(["admin"]), vehiclesController.createVehicle);
+router.get("/", vehiclesController.getAllVehicles);
+router.get("/:id", vehiclesController.getVehiclesById);
 
 export const vehiclesRouter = router;
