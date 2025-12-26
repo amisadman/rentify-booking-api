@@ -1,18 +1,6 @@
-import express, { Request, Response } from "express";
-import morgan from "morgan";
-const app = express();
-app.use(express.json());
-app.use(morgan("combined"));
+import app from "./app";
+import { config } from "./config/config";
 
-
-
-
-app.get("/", (req: Request, res: Response) => {
-  return res.status(200).json({
-    success: true,
-    message: "Hello from Rentify!!!",
-  });
-});
-app.listen(5000, () => {
-  console.log("Server is running on localhost 5000");
+app.listen(config.port, () => {
+  console.log(`Server is running on localhost: ${config.port} `);
 });
