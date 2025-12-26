@@ -15,7 +15,7 @@ const signup = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (error.message.includes("duplicate key"))
       return sendResponse(res, 400, false, error.message, null);
-    return sendResponse(res, 404, false, error.message, null);
+    return sendResponse(res, 500, false, error.message, null);
   }
 };
 const signin = async (req: Request, res: Response) => {
@@ -27,7 +27,9 @@ const signin = async (req: Request, res: Response) => {
     else if (result === false)
       return sendResponse(res, 400, false, "Incorrect Password", null);
     else return sendResponse(res, 201, true, "Login successful", result);
-  } catch (error) {}
+  } catch (error: any) {
+    return sendResponse(res, 500, false, error.message, null);
+  }
 };
 
 export const authController = {

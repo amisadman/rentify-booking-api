@@ -15,7 +15,7 @@ const createVehicle = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (error.message.includes("duplicate key"))
       return sendResponse(res, 400, false, error.message, null);
-    return sendResponse(res, 404, false, error.message, null);
+    return sendResponse(res, 500, false, error.message, null);
   }
 };
 
@@ -27,7 +27,7 @@ const getAllVehicles = async (req: Request, res: Response) => {
     else
       sendResponse(res, 200, true, "Vehicles retrieved successfully", result);
   } catch (error: any) {
-    return sendResponse(res, 404, false, error.message, null);
+    return sendResponse(res, 500, false, error.message, null);
   }
 };
 const getVehiclesById = async (req: Request, res: Response) => {
@@ -39,7 +39,27 @@ const getVehiclesById = async (req: Request, res: Response) => {
     else
       sendResponse(res, 200, true, "Vehicles retrieved successfully", result);
   } catch (error: any) {
-    return sendResponse(res, 404, false, error.message, null);
+    return sendResponse(res, 500, false, error.message, null);
+  }
+};
+
+const updateVehicle = async (req: Request, res: Response) => {
+  try {
+    const vehicleId = Number(req.params.id);
+
+    const existingVehicle = await vehicleService.getVehiclesById(vehicleId);
+    if (!existingVehicle) {
+      return sendResponse(res, 404, false, "Vehicle not found");
+    }
+
+    const result = await vehicleService.updateVehicle(vehicleId, req.body);
+    if (!result) {
+      return sendResponse(res, 400, false, "No valid fields to update");
+    }
+
+    return sendResponse(res, 200, true, "Vehicle updated successfully", result);
+  } catch (error: any) {
+    return sendResponse(res, 500, false, error.message);
   }
 };
 
@@ -47,4 +67,5 @@ export const vehiclesController = {
   createVehicle,
   getAllVehicles,
   getVehiclesById,
+  updateVehicle,
 };
