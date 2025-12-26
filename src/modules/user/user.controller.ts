@@ -47,7 +47,27 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = Number(req.params.id);
+
+    const existingUser = await userService.getUserById(userId);
+    if (!existingUser) {
+      return sendResponse(res, 404, false, "User not found");
+    }
+
+    await userService.deleteUser(userId);
+    return sendResponse(res, 200, true, "User deleted successfully");
+  } catch (error: any) {
+    if (error.message.includes("active bookings")) {
+      return sendResponse(res, 400, false, error.message);
+    }
+    return sendResponse(res, 500, false, error.message);
+  }
+};
+
 export const userController ={
     getAllUsers,
-    updateUser
+    updateUser,
+    deleteUser
 }
