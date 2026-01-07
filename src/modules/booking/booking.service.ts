@@ -70,6 +70,50 @@ const createBooking = async (payload: Record<string, unknown>) => {
   };
 };
 
+const updateBookingStatus = async (
+  id: number,
+  status: string,
+  vehicleId: number
+) => {
+  const result = await pool.query(
+    `
+        UPDATE bookings SET status=$1,updated_at=NOW() WHERE id=$2 RETURNING id,customer_id,vehicle_id,rent_start_date,rent_end_date,total_price,status
+        
+        `,
+    [status, id]
+  );
+
+  await pool.query(
+    `
+        UPDATE vehicles SET availability_status='available',updated_at=NOW() WHERE id=$1
+        
+        `,
+    [vehicleId]
+  );
+
+  if (status === "returned") {
+    return {
+      ...result.rows[0],
+      vehicle: {
+        availability_status: "available",
+      },
+    };
+  }
+
+  return result.rows[0];
+};
+const getBookingById = async (id: number) => {
+  const result = await pool.query(
+    `
+        SELECT id,customer_id,vehicle_id,rent_start_date,rent_end_date,total_price,status FROM bookings WHERE id=$1
+        
+        `,
+    [id]
+  );
+  return result.rows[0];
+};
 export const bookingService = {
-    createBooking
-}
+  createBooking,
+  updateBookingStatus,
+  getBookingById,
+};
