@@ -207,6 +207,7 @@ Authorization: Bearer <your_jwt_token>
 ### Register User
 
 `POST` `/api/v1/auth/signup`
+<br>
 Content-Type: `application/json`
 
 ```bash
@@ -222,7 +223,9 @@ Content-Type: `application/json`
 ### Create Vehicle (Admin)
 
 `POST` `/api/v1/vehicles`
+<br>
 Authorization: `Bearer <admin_token>`
+<br>
 Content-Type: `application/json`
 
 ```bash
@@ -238,7 +241,9 @@ Content-Type: `application/json`
 ### Create Booking
 
 `POST` `/api/v1/bookings`
+<br>
 Authorization: `Bearer <customer_token>`
+<br>
 Content-Type: `application/json`
 
 ```bash
@@ -252,7 +257,7 @@ Content-Type: `application/json`
 
 ---
 
-## 🔗 Links
+## Links
 
 - **Live API:** [https://rentify-booking-api.vercel.app](https://rentify-booking-api.vercel.app)
 - **Repository:** [https://github.com/amisadman/rentify-booking-api](https://github.com/amisadman/rentify-booking-api)
