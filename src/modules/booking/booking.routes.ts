@@ -5,7 +5,22 @@ import { access } from "../../middleware/role";
 
 const router = Router();
 
-router.post("/",auth, access(["admin" , "customer"]), bookingController.createBooking);
-router.put("/:id", auth, access(["admin", "customer"]), bookingController.updateBooking);
-
+router.post(
+  "/",
+  auth,
+  access(["admin", "customer"]),
+  bookingController.createBooking
+);
+router.put(
+  "/:id",
+  auth,
+  access(["admin", "customer"]),
+  bookingController.updateBooking
+);
+router.get(
+  "/",
+  auth,
+  access(["admin", "customer"]),
+  bookingController.getAllBookings
+);
 export const bookingRouter = router;

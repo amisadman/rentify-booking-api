@@ -112,8 +112,68 @@ const getBookingById = async (id: number) => {
   );
   return result.rows[0];
 };
+
+const getAllBookings = async (userId: number, role: string) => {
+  if (role === "admin") {
+    const result = await pool.query(`
+        SELECT b.id, b.customer_id, b.vehicle_id, b.rent_start_date, b.rent_end_date, b.total_price, b.status,
+        u.name as customer_name, u.email as customer_email,
+        v.vehicle_name, v.registration_number
+        FROM bookings b
+        JOIN users u ON b.customer_id = u.id
+        JOIN vehicles v ON b.vehicle_id = v.id
+        ORDER BY b.created_at DESC
+        `);
+
+    return result.rows.map((row) => ({
+      id: row.id,
+      customer_id: row.customer_id,
+      vehicle_id: row.vehicle_id,
+      rent_start_date: row.rent_start_date,
+      rent_end_date: row.rent_end_date,
+      total_price: row.total_price,
+      status: row.status,
+      customer: {
+        name: row.customer_name,
+        email: row.customer_email,
+      },
+      vehicle: {
+        vehicle_name: row.vehicle_name,
+        registration_number: row.registration_number,
+      },
+    }));
+  } else {
+    const result = await pool.query(
+      `
+        SELECT b.id, b.vehicle_id, b.rent_start_date, b.rent_end_date, b.total_price, b.status,
+        v.vehicle_name, v.registration_number, v.type
+        FROM bookings b
+        JOIN vehicles v ON b.vehicle_id = v.id
+        WHERE b.customer_id = $1
+        ORDER BY b.created_at DESC
+        `,
+      [userId]
+    );
+
+    return result.rows.map((row) => ({
+      id: row.id,
+      vehicle_id: row.vehicle_id,
+      rent_start_date: row.rent_start_date,
+      rent_end_date: row.rent_end_date,
+      total_price: row.total_price,
+      status: row.status,
+      vehicle: {
+        vehicle_name: row.vehicle_name,
+        registration_number: row.registration_number,
+        type: row.type,
+      },
+    }));
+  }
+};
+
 export const bookingService = {
   createBooking,
   updateBookingStatus,
   getBookingById,
+  getAllBookings,
 };

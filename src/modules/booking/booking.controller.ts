@@ -83,7 +83,36 @@ const updateBooking = async (req: Request, res: Response) => {
     return sendResponse(res, 500, false, error.message);
   }
 };
+
+const getAllBookings = async (req: Request, res: Response) => {
+  try {
+    const currentUser = req.user!;
+    const result = await bookingService.getAllBookings(
+      currentUser.id,
+      currentUser.role
+    );
+
+    if (result.length === 0) {
+      const message =
+        currentUser.role === "admin"
+          ? "No bookings found"
+          : "Your bookings retrieved successfully";
+      return sendResponse(res, 200, true, message, []);
+    }
+
+    const message =
+      currentUser.role === "admin"
+        ? "Bookings retrieved successfully"
+        : "Your bookings retrieved successfully";
+
+    return sendResponse(res, 200, true, message, result);
+  } catch (error: any) {
+    return sendResponse(res, 500, false, error.message);
+  }
+};
+
 export const bookingController = {
   createBooking,
   updateBooking,
+  getAllBookings
 };
